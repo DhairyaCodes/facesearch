@@ -3,16 +3,17 @@
 
 import '../global/colors.dart';
 
-  void ErrorDialog(BuildContext context, String errorMessage) {
+  void ErrorDialog(BuildContext context, String errorMessage, {int success = 0}) {
       Alert(
         context: context,
-        type: AlertType.error,
-        title: "Error",
-        style: const AlertStyle(
-          titleStyle: TextStyle(
+        type: success == 1 ? AlertType.success : AlertType.error,
+        title: success == 1 ? "Success" : "Error",
+        style: AlertStyle(
+          titleStyle: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+          titleTextAlign: success == 1 ? TextAlign.center : TextAlign.left
         ),
         closeIcon: const SizedBox(),
         buttons: [

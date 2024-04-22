@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:facesearch/global/colors.dart';
+import 'package:facesearch/reusable/dialog_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart' as Image;
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart' as Img;
 
 class ImagePicker extends StatefulWidget {
   @override
@@ -14,57 +17,108 @@ class _ImagePickerState extends State<ImagePicker> {
   File? _pickImageFile;
 
   Future<void> _uploadImage(File img) async {
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('images')
-        .child(FirebaseAuth.instance.currentUser!.uid)
-        .child("${DateTime.now().millisecondsSinceEpoch.toString()}.jpg");
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('images')
+          .child(FirebaseAuth.instance.currentUser!.uid)
+          .child("${DateTime.now().millisecondsSinceEpoch.toString()}.jpg");
 
-    await ref.putFile(img).whenComplete(() => null);
-    final url = await ref.getDownloadURL();
-    FirebaseFirestore.instance
-        .collection("images")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("userImages")
-        .doc()
-        .set(
-      {
-        "url": url,
-      },
-    );
+      await ref.putFile(img).whenComplete(() => null);
+      final url = await ref.getDownloadURL();
+      FirebaseFirestore.instance
+          .collection("images")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("userImages")
+          .doc()
+          .set(
+        {
+          "url": url,
+        },
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 10,
+          duration: Duration(seconds: 3),
+          content: Text("Uploaded Successfully!"),
+        ),
+      );
+      setState(() {
+        _pickImageFile = null;
+      });
+    } catch (e) {
+      print(e);
+      ErrorDialog(context, "Unable to upload image.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occured. Please try again."),
+        ),
+      );
+    }
   }
 
-  void _pickImage() async {
-    final imageFile = await Image.ImagePicker().pickImage(
-      source: Image.ImageSource.camera,
-      preferredCameraDevice: Image.CameraDevice.rear,
-      maxWidth: 150,
-      imageQuality: 60,
+  void _pickImage(int width) async {
+    final imageFile = await Img.ImagePicker().pickImage(
+      source: Img.ImageSource.camera,
+      preferredCameraDevice: Img.CameraDevice.rear,
+      maxWidth: width * 0.8,
+      imageQuality: 100,
     );
     setState(() {
       _pickImageFile = File(imageFile!.path);
     });
-    _pickImageFile != null ? _uploadImage(_pickImageFile as File) : null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.lightBlue,
-            backgroundImage: _pickImageFile != null
-                ? FileImage(_pickImageFile as File)
-                : null,
+          GestureDetector(
+            onTap: () => _pickImage((width).round()),
+            child: Container(
+              width: width * 0.64,
+              height: width * 0.64 * 4 / 3,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: kgreen.withOpacity(0.4),
+                  strokeAlign: BorderSide.strokeAlignOutside,
+                ),
+                borderRadius: BorderRadius.circular(
+                  8,
+                ),
+              ),
+              child: _pickImageFile == null
+                  ? Center(child: Text('Tap to select an Image'))
+                  : Image(image: FileImage(_pickImageFile!)),
+            ),
           ),
-          TextButton.icon(
-            onPressed: _pickImage,
-            icon: Icon(Icons.image),
-            label: Text(
-              "Add Image",
-              style: TextStyle(color: Theme.of(context).primaryColor),
+          SizedBox(
+            height: 16,
+          ),
+          // TextButton.icon(
+          //   onPressed: () => _pickImage((width).round()),
+          //   icon: Icon(Icons.image),
+          //   label: Text(
+          //     "Add Image",
+          //     style: TextStyle(color: Theme.of(context).primaryColor),
+          //   ),
+          // ),
+          SizedBox(
+            height: 16,
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                fixedSize: MaterialStatePropertyAll(Size(width, 48))),
+            onPressed: () => _pickImageFile != null
+                ? _uploadImage(_pickImageFile as File)
+                : null,
+            child: Text(
+              "Upload Image",
+              style: TextStyle(fontSize: 18),
             ),
           ),
         ],

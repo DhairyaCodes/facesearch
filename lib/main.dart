@@ -37,8 +37,15 @@ class MyApp extends StatelessWidget {
         UploadScreen.routeName: (context) => UploadScreen(),
       },
       title: 'Face Search',
+      // darkTheme: ThemeData(useMaterial3: true),
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.dark(primary: kgreen, outline: kgreen.withOpacity(0.4)),
+        snackBarTheme: SnackBarThemeData(
+          // actionBackgroundColor: kgreen.withOpacity(0.7),
+          backgroundColor: kgreen.withOpacity(0.5),
+          contentTextStyle: TextStyle(color: kwhite)
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,

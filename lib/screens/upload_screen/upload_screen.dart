@@ -30,10 +30,6 @@ class _UploadScreenState extends State<UploadScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ImagePicker(),
-              ElevatedButton(
-                onPressed: () => FirebaseAuth.instance.signOut(),
-                child: Text("Logout"),
-              ),
             ],
           ),
         ),
