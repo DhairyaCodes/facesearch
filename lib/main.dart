@@ -40,12 +40,12 @@ class MyApp extends StatelessWidget {
       // darkTheme: ThemeData(useMaterial3: true),
       themeMode: ThemeMode.dark,
       theme: ThemeData(
-        colorScheme: ColorScheme.dark(primary: kgreen, outline: kgreen.withOpacity(0.4)),
+        colorScheme:
+            ColorScheme.dark(primary: kgreen, outline: kgreen.withOpacity(0.4)),
         snackBarTheme: SnackBarThemeData(
-          // actionBackgroundColor: kgreen.withOpacity(0.7),
-          backgroundColor: kgreen.withOpacity(0.5),
-          contentTextStyle: TextStyle(color: kwhite)
-        ),
+            // actionBackgroundColor: kgreen.withOpacity(0.7),
+            backgroundColor: kgreen,
+            contentTextStyle: TextStyle(color: kwhite)),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,

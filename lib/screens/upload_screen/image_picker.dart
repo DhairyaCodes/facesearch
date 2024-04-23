@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart' as Img;
 
+import '../../reusable/custom_snackbar.dart';
+
 class ImagePicker extends StatefulWidget {
   @override
   State<ImagePicker> createState() => _ImagePickerState();
@@ -36,31 +38,19 @@ class _ImagePickerState extends State<ImagePicker> {
           "url": url,
         },
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 10,
-          duration: Duration(seconds: 3),
-          content: Text("Uploaded Successfully!"),
-        ),
-      );
+      showCustomSnackBar(context, "Uploaded Successfully!");
       setState(() {
         _pickImageFile = null;
       });
     } catch (e) {
       print(e);
-      ErrorDialog(context, "Unable to upload image.");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("An error occured. Please try again."),
-        ),
-      );
+      showCustomSnackBar(context, "An error occured. Please try again.");
     }
   }
 
   void _pickImage(int width) async {
     final imageFile = await Img.ImagePicker().pickImage(
-      source: Img.ImageSource.camera,
+      source: Img.ImageSource.gallery,
       preferredCameraDevice: Img.CameraDevice.rear,
       maxWidth: width * 0.8,
       imageQuality: 100,
@@ -79,43 +69,36 @@ class _ImagePickerState extends State<ImagePicker> {
           GestureDetector(
             onTap: () => _pickImage((width).round()),
             child: Container(
-              width: width * 0.64,
-              height: width * 0.64 * 4 / 3,
+              width: width - 96,
+              height: width - 96,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: kgreen.withOpacity(0.4),
-                  strokeAlign: BorderSide.strokeAlignOutside,
-                ),
-                borderRadius: BorderRadius.circular(
-                  8,
-                ),
-              ),
+                  border: Border.all(
+                    color: kgreen.withOpacity(0.4),
+                    strokeAlign: BorderSide.strokeAlignOutside,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    8,
+                  ),
+                  color: kgreen.withOpacity(0.04)),
               child: _pickImageFile == null
                   ? Center(child: Text('Tap to select an Image'))
-                  : Image(image: FileImage(_pickImageFile!)),
+                  : Image(
+                      image: FileImage(_pickImageFile!),
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           SizedBox(
-            height: 16,
-          ),
-          // TextButton.icon(
-          //   onPressed: () => _pickImage((width).round()),
-          //   icon: Icon(Icons.image),
-          //   label: Text(
-          //     "Add Image",
-          //     style: TextStyle(color: Theme.of(context).primaryColor),
-          //   ),
-          // ),
-          SizedBox(
-            height: 16,
+            height: 32,
           ),
           ElevatedButton(
             style: ButtonStyle(
                 fixedSize: MaterialStatePropertyAll(Size(width, 48))),
             onPressed: () => _pickImageFile != null
                 ? _uploadImage(_pickImageFile as File)
-                : null,
+                : showCustomSnackBar(
+                    context, "Please select an Image first."),
             child: Text(
               "Upload Image",
               style: TextStyle(fontSize: 18),

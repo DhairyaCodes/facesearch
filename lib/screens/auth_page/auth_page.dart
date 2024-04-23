@@ -20,55 +20,56 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: () async {
-        Alert(
-          context: context,
-          type: AlertType.warning,
-          title: "Caution!",
-          style: const AlertStyle(
-            titleStyle: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          closeIcon: const SizedBox(),
-          buttons: [
-            DialogButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  _exit = true;
-                });
-                SystemNavigator.pop();
-              },
-              color: kwhite,
-              child: const Text(
-                "YES",
-                style: TextStyle(color: kgrey),
-              ),
-            ),
-            DialogButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              color: kblack,
-              child: const Text(
-                "NO",
-                style: TextStyle(color: kwhite),
-              ),
-            ),
-          ],
-          content: const Text(
-            "Are you sure you want to exit the app?",
-            style: TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-        ).show();
+    // return WillPopScope(
+    //   onWillPop: () async {
+    //     Alert(
+    //       context: context,
+    //       type: AlertType.warning,
+    //       title: "Caution!",
+    //       style: const AlertStyle(
+    //         titleStyle: TextStyle(
+    //           fontSize: 22,
+    //           fontWeight: FontWeight.bold,
+    //         ),
+    //       ),
+    //       closeIcon: const SizedBox(),
+    //       buttons: [
+    //         DialogButton(
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //             setState(() {
+    //               _exit = true;
+    //             });
+    //             SystemNavigator.pop();
+    //           },
+    //           color: kwhite,
+    //           child: const Text(
+    //             "YES",
+    //             style: TextStyle(color: kgrey),
+    //           ),
+    //         ),
+    //         DialogButton(
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //           color: kblack,
+    //           child: const Text(
+    //             "NO",
+    //             style: TextStyle(color: kwhite),
+    //           ),
+    //         ),
+    //       ],
+    //       content: const Text(
+    //         "Are you sure you want to exit the app?",
+    //         style: TextStyle(fontSize: 16),
+    //         textAlign: TextAlign.center,
+    //       ),
+    //     ).show();
 
-        return _exit;
-      },
-      child: GestureDetector(
+    //     return _exit;
+    //   },
+    //   child:
+    return GestureDetector(
         onTap: () {
           // Unfocus the keyboard when the user taps outside the TextFormField.
           final currentFocus = FocusScope.of(context);
@@ -106,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
             ),
           ),
         ),
-      ),
+      // ),
     );
   }
 }

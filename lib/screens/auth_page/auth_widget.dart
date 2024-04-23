@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../global/colors.dart';
 import '../../reusable/dialog_box.dart';
@@ -138,6 +139,18 @@ class _AuthWidgetState extends State<AuthWidget> {
       });
       ErrorDialog(context, _errorMessage);
     }
+  }
+
+  Future<void> signinGoogle() async{
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth!.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   @override
@@ -381,10 +394,7 @@ class _AuthWidgetState extends State<AuthWidget> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () async {
-              await FirebaseAuth.instance
-                  .signInWithProvider(GoogleAuthProvider());
-            },
+            onPressed: signinGoogle,
             style: ButtonStyle(
                 fixedSize: MaterialStatePropertyAll(
                   Size(width - 40, 50),
