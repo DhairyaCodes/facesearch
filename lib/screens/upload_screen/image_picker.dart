@@ -52,7 +52,7 @@ class _ImagePickerState extends State<ImagePicker> {
     final imageFile = await Img.ImagePicker().pickImage(
       source: Img.ImageSource.gallery,
       preferredCameraDevice: Img.CameraDevice.rear,
-      maxWidth: width * 0.8,
+      // maxWidth: width * 0.8,
       imageQuality: 100,
     );
     setState(() {
